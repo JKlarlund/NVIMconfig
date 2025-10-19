@@ -13,3 +13,6 @@ vim.opt.rtp:prepend(lazypath)
 local opts = {}
 require("vim-options")
 require("lazy").setup("plugins")
+vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>", { silent = true })
+vim.opt.termguicolors = true
+

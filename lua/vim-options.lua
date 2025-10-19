@@ -12,3 +12,9 @@ vim.cmd("highlight LineNr guibg=NONE ctermbg=NONE")
 vim.cmd("highlight SignColumn guibg=NONE ctermbg=NONE")
 vim.cmd("highlight StatusLine guibg=NONE ctermbg=NONE")
 vim.cmd("highlight StatusLineNC guibg=NONE ctermbg=NONE")
+vim.opt.autoindent = true      -- copy indentation from previous line
+vim.opt.smartindent = true     -- smarter indentation for code
+vim.opt.wrap = true            -- enable line wrapping
+vim.opt.breakindent = true     -- visually indent wrapped lines
+vim.cmd("filetype plugin indent on")
+
