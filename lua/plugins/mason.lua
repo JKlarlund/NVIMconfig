@@ -19,10 +19,19 @@ return {
     config = function()
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
       local lspconfig = require("lspconfig")
-      lspconfig.fsautocomplete.setup({
-        cmd = {"C:\\Users\\jonat\\.dotnet\\tools\\fsautocomplete.exe", "--background-service-enabled"},
-        capabilities = capabilities
-      })
+      lspconfig.fsautocomplete.setup{
+        cmd = {"fsautocomplete"},   -- FSAC executable
+        filetypes = {"fsharp", "fsi", "fsx"},  -- F# files
+        root_dir = lspconfig.util.root_pattern("*.fsproj", "*.sln"),  -- auto-detect project
+        settings = {
+          FSharp = {
+            AutomaticWorkspaceInit = true,  -- detect fsproj automatically
+            SemanticTokens = false,
+            UseSdkScripts = true,           -- allows scripts to work
+            ScriptFilesEnabled = true,
+          }
+        },
+      }
       lspconfig.tsserver.setup({
         capabilities = capabilities
       })
@@ -41,12 +50,6 @@ return {
       vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
 
       vim.o.updatetime = 250
-      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
-        callback = function ()
-          vim.diagnostic.open_float(nil, {focus=false})
-          end
-        })
 
       vim.diagnostic.config({
         virtual_text = false,  -- Disable inline virtual text

@@ -8,6 +8,6 @@ return{
     },
     config = function()
       vim.keymap.set('n', '<C-n>', ':Neotree filesystem reveal left<CR>')
-      vim.keymap.set('q', '<C-q>', ':Neotree close<CR>')
+      vim.keymap.set('n', '<q>', ':Neotree close<CR>')
     end
 }

@@ -60,6 +60,7 @@ return {
         function(server_name)
           lspconfig[server_name].setup({
             on_attach = function(client, bufnr)
+              client.server_capabilities.semanticTokensProvider = nil
               local buf_map = function(mode, lhs, rhs)
                 vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, { noremap = true, silent = true })
               end
@@ -71,20 +72,6 @@ return {
               buf_map("n", "<leader>c", "<cmd>lua vim.lsp.buf.clear_references()<CR>",
                 { noremap = true, silent = true }
               )
-              if client.server_capabilities.documentHighlightProvider then
-                vim.api.nvim_create_autocmd({"CursorHold"}, {
-                  buffer = bufnr,
-                  callback = function()
-                    vim.lsp.buf.document_highlight()
-                  end,
-                })
-                vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
-                  buffer = bufnr,
-                  callback = function()
-                    vim.cmd("nohlsearch")
-                  end,
-                })
-              end
             end,
           })
         end,

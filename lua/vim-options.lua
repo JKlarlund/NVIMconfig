@@ -17,4 +17,6 @@ vim.opt.smartindent = true     -- smarter indentation for code
 vim.opt.wrap = true            -- enable line wrapping
 vim.opt.breakindent = true     -- visually indent wrapped lines
 vim.cmd("filetype plugin indent on")
-
+vim.api.nvim_set_hl(0, "fsVariable", { fg="#D19A66" })
+vim.api.nvim_set_hl(0, "fsFunction", { fg="#61AFEF" })
+vim.api.nvim_set_hl(0, "fsParameter", { fg="#E06C75" })
