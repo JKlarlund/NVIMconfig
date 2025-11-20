@@ -1,6 +1,7 @@
 return {
   {
     "williamboman/mason.nvim",
+    version = "v1.*",
     lazy = false,
     config = function()
       require("mason").setup()
@@ -8,6 +9,7 @@ return {
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    version = "v1.*",
     lazy = false,
     opts = {
       auto_install = true,
@@ -15,10 +17,16 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
+    tag = "v0.1.7",
     lazy = false,
+    dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim", "hrsh7th/cmp-nvim-lsp" },
+      
     config = function()
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
       local lspconfig = require("lspconfig")
+      local mason = require("mason")
+      local mason_lspconfig = require("mason-lspconfig")
+      local cmp_nvim_lsp = require("cmp_nvim_lsp")  -- ✅ add this
+      local capabilities = cmp_nvim_lsp.default_capabilities() -- ✅ and this
       lspconfig.fsautocomplete.setup{
         cmd = {"fsautocomplete"},   -- FSAC executable
         filetypes = {"fsharp", "fsi", "fsx"},  -- F# files

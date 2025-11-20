@@ -1,20 +1,9 @@
 return {
-  -- LSP source for nvim-cmp
-  { "hrsh7th/cmp-nvim-lsp" },
-
-  -- Snippet engine + sources
-  {
-    "L3MON4D3/LuaSnip",
-    dependencies = {
-      "saadparwaiz1/cmp_luasnip",
-      "rafamadriz/friendly-snippets",
-    },
-  },
 
   -- Completion engine
   {
     "hrsh7th/nvim-cmp",
-    dependencies = { "hrsh7th/cmp-nvim-lsp", "saadparwaiz1/cmp_luasnip" },
+    dependencies = { "L3MON4D3/LuaSnip", "hrsh7th/cmp-nvim-lsp", "saadparwaiz1/cmp_luasnip", "hrsh7th/cmp-buffer", "hrsh7th/cmp-path"},
     config = function()
       local cmp = require("cmp")
       local luasnip = require("luasnip")
@@ -25,8 +14,18 @@ return {
       -- Load VSCode-style snippets
       require("luasnip.loaders.from_vscode").lazy_load()
 
+      lspconfig.clangd.setup({
+        cmd = { clangd },
+        filetypes = {c},
+        root_dir = lspconfig.util.root_pattern("compile_commands.json", ".git", "Makefile")
+      })
       -- nvim-cmp setup
       cmp.setup({
+--      completion = {
+--        autocomplete = false,
+--      },
+        --
+
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -41,12 +40,11 @@ return {
           ["<C-d>"] = cmp.mapping.scroll_docs(4),    -- scroll docs down
           ["<C-S>"] = cmp.mapping.complete(),        -- trigger completion
           ["<C-e>"] = cmp.mapping.abort(),           -- cancel completion
-          ["<CR>"] = cmp.mapping.confirm({ select = true }), -- confirm selection
-          }),        
+          ["<CR>"] = cmp.mapping.confirm({ select = true }) -- confirm selection
+        }),        
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "luasnip" },
-        }, {
           { name = "buffer" },
         }),
       })
@@ -55,10 +53,13 @@ return {
       mason.setup()
       mason_lspconfig.setup({ automatic_installation = true })
 
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
       -- Auto-attach all installed LSPs
       mason_lspconfig.setup_handlers({
         function(server_name)
           lspconfig[server_name].setup({
+            capabilities = capabilities,
             on_attach = function(client, bufnr)
               client.server_capabilities.semanticTokensProvider = nil
               local buf_map = function(mode, lhs, rhs)
@@ -67,16 +68,11 @@ return {
 
               buf_map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
               buf_map("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-              buf_map("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-              buf_map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-              buf_map("n", "<leader>c", "<cmd>lua vim.lsp.buf.clear_references()<CR>",
-                { noremap = true, silent = true }
-              )
-            end,
+              end,
           })
         end,
       })
-    end,
+  end,
   },
 
   -- Mason plugins
